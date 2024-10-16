@@ -1,17 +1,22 @@
 import http from "node:http";
-import { XMLParser } from "fast-xml-parser";
+import { XMLParser, type X2jOptions } from "fast-xml-parser";
 
-export function get(url: string | URL, options?: http.RequestOptions) {
+export function get(url: string | URL, options?: http.RequestOptions, _internalCount = 0) {
     return new Promise<http.IncomingMessage & {
         text(): Promise<string>,
-        xml(): Promise<any>
+        xml(options?: X2jOptions): Promise<any>
     }>((resolve, reject) => {
         const req = http.get(url, options ?? {});
 
         req.once("error", (err) => {
-            reject(err);
-            req.destroy();
-            req.removeAllListeners();
+            if (_internalCount >= 3) {
+                reject(err);
+                req.destroy();
+                req.removeAllListeners();
+                return;
+            }
+
+            get(url, options, _internalCount + 1).then(resolve).catch(reject);
         });
 
         req.once("response", (res) => {
@@ -35,9 +40,9 @@ export function get(url: string | URL, options?: http.RequestOptions) {
                         });
                     });
                 },
-                async xml() {
+                async xml(o: X2jOptions) {
                     const text = await this.text();
-                    const parser = new XMLParser();
+                    const parser = new XMLParser(o);
                     return parser.parse(text);
                 }
             }));
@@ -45,10 +50,10 @@ export function get(url: string | URL, options?: http.RequestOptions) {
     });
 }
 
-export function post(url: string | URL, data: string | Buffer, options?: http.RequestOptions) {
+export function post(url: string | URL, data: string | Buffer, options?: http.RequestOptions, _internalCount = 0) {
     return new Promise<http.IncomingMessage & {
         text(): Promise<string>,
-        xml(): Promise<any>
+        xml(options?: X2jOptions): Promise<any>
     }>((resolve, reject) => {
         const req = http.request(url, {
             method: "POST",
@@ -56,9 +61,14 @@ export function post(url: string | URL, data: string | Buffer, options?: http.Re
         });
 
         req.once("error", (err) => {
-            reject(err);
-            req.destroy();
-            req.removeAllListeners();
+            if (_internalCount >= 3) {
+                reject(err);
+                req.destroy();
+                req.removeAllListeners();
+                return;
+            }
+
+            post(url, data, options, _internalCount + 1).then(resolve).catch(reject);
         });
 
         req.once("response", (res) => {
@@ -82,9 +92,9 @@ export function post(url: string | URL, data: string | Buffer, options?: http.Re
                         });
                     });
                 },
-                async xml() {
+                async xml(o: X2jOptions) {
                     const text = await this.text();
-                    const parser = new XMLParser();
+                    const parser = new XMLParser(o);
                     return parser.parse(text);
                 }
             }));
