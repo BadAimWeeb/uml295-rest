@@ -2,8 +2,7 @@ import "dotenv/config";
 import { Agent } from "node:http";
 import { post } from "./http-fetch.js";
 import type { IDBlob } from "./types.js";
-import { sendMessage } from "./func/sendMessage.js";
-import { getMessages } from "./func/getMessages.js";
+import { initServer } from "./server.js";
 
 let DEVICE_IP = process.env.UML295_TARGET_ADDRESS ?? "192.168.32.2";
 let DEVICE_INTERFACE = process.env.UML295_INTERFACE;
@@ -49,5 +48,4 @@ const ID_BLOB = {
     }
 } as IDBlob;
 
-// TODO
-console.log(await getMessages(ID_BLOB));
+initServer(ID_BLOB);
