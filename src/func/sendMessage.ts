@@ -64,7 +64,7 @@ export async function sendMessage(idBlob: IDBlob, to: string, message: string, s
                 bcc: null,
                 replyto: null,
                 subject: null,
-                body: Buffer.from(message, "utf-8").toString("hex"),
+                body: Buffer.from(segmented.graphemes.join(""), "utf-8").toString("hex"),
                 priority: null,
                 sendkey: response1.sendkey.token
             },
