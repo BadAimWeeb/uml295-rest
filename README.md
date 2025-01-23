@@ -1,12 +1,12 @@
 # uml295-rest
 
-Alternative SMS REST API for UML295 modem.
+Alternative SMS REST/JS API for UML295 modem.
 
 ### Why?
 
 The correct way to interact with GSM modems is to use AT commands (and `gammu`?). However, UML295 (at least the one I have) has a very broken AT command support for receiving SMS, and `gammu` failed to control it.
 
-Fortunately, UML295 has a web interface that can be used to send and receive SMS. This project is a simple REST API that uses the interface and expose simple endpoints to send and receive SMS.
+Fortunately, UML295 has a web interface that can be used to send and receive SMS. This project is a simple REST/JS API that uses the interface and expose simple endpoints to send and receive SMS.
 
 > [!IMPORTANT]
 > If you're using multiple UML295 modems, you MUST assign different interface IP or subnet and specify the interface IP (and target address `.2` if you've changed subnet) in `.env` file.
