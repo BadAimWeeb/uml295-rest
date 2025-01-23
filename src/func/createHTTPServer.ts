@@ -6,7 +6,7 @@ import type { IDBlob } from '../types.js';
 import { getMessages } from './getMessages.js';
 import { markReadMessage } from './markReadMessage.js';
 import { deleteMessage } from './deleteMessage.js';
-import sse, { type ISseResponse } from '@toverux/expresse';
+import { type ISseResponse, sse } from '@toverux/expresse';
 import { sendMessage } from './sendMessage.js';
 
 export function createHTTPServer(idBlob: IDBlob) {
